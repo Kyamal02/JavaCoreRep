@@ -1,10 +1,12 @@
 package ru.itis.collections.linkedList;
 
 import ru.itis.collections.List;
+import ru.itis.collections.Queue;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class LinkedList<E> implements List<E> {
+public class LinkedList<E> implements List<E>, Queue<E> {
     private Node<E> head = null;
     private Node<E> tail = null;
     private int size = 0;
@@ -15,6 +17,9 @@ public class LinkedList<E> implements List<E> {
         if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException();
         }
+        if (head == null && tail == null) {
+            return null;
+        }
         Node<E> current = head;
         while (index > 0) {
             current = current.next;
@@ -24,7 +29,7 @@ public class LinkedList<E> implements List<E> {
     }
 
     @Override
-    public void add(E element) {
+    public boolean add(E element) {
         if (head == null) {
             tail = head = new Node<>(null, null, element);
         } else {
@@ -33,6 +38,24 @@ public class LinkedList<E> implements List<E> {
             tail = prev.next;
         }
         size++;
+        return true;
+    }
+
+    @Override
+    public E peek() {
+        return head == null ? null : head.element;
+    }
+
+    @Override
+    public E poll() {
+        if (head == null) {
+            return null;
+        }
+        E returnElement = head.element;
+        head = head.next;
+        head.previous = null;
+        size--;
+        return returnElement;
     }
 
     @Override
@@ -71,7 +94,7 @@ public class LinkedList<E> implements List<E> {
         Node<E> current = head;
         int index = 0;
         while (current != null) {
-            if (element.equals(current.element)) {
+            if (element == current.element || element != null && element.equals(current.element)) {
                 if (index == 0) {
                     removeFirstElement();
                     return true;
@@ -110,6 +133,18 @@ public class LinkedList<E> implements List<E> {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean contains(E element) {
+        Node<E> current = head;
+        while (current != null) {
+            if (element == current.element || element != null && element.equals(current.element)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
     }
 
     @Override
@@ -163,7 +198,9 @@ public class LinkedList<E> implements List<E> {
 
         Node<E> currentHead = head;
         head = currentHead.next;
-        head.previous = null;
+        if (head != null) {
+            head.previous = null;
+        }
         size--;
     }
 
@@ -183,7 +220,6 @@ public class LinkedList<E> implements List<E> {
         }
     }
 
-
     private static class Node<E> {
         Node<E> previous;
         Node<E> next;
@@ -199,5 +235,44 @@ public class LinkedList<E> implements List<E> {
         public String toString() {
             return element.toString();
         }
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+        return new Itr();
+    }
+
+
+    private class Itr implements Iterator<E> {
+        Node<E> current = LinkedList.this.head;
+        int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index != size;
+        }
+
+        @Override
+        public E next() {
+            Node<E> result = current;
+            current = current.next;
+            index++;
+            return result.element;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        LinkedList<Integer> integerLinkedList = new LinkedList<>();
+        integerLinkedList.add(5);
+        System.out.println(integerLinkedList.add(null));
+        System.out.println(integerLinkedList.size);
+        System.out.println(integerLinkedList.get(0));
+
+        System.out.println(integerLinkedList.contains(null));
+
+        System.out.println(integerLinkedList.remove(null));
+        System.out.println(integerLinkedList.remove(null));
+
     }
 }

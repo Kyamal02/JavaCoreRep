@@ -14,8 +14,6 @@ public class ImmutableClass {
 
     @Override
     public String toString() {
-
-
         return "ImmutableClass{" +
                 "mutableClass=" + mutableClass +
                 '}';

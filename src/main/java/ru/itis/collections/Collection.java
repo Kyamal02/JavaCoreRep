@@ -1,7 +1,6 @@
 package ru.itis.collections;
 
-
-public interface Set<E> extends Collection<E> {
+public interface Collection<E> extends Iterable<E> {
     boolean add(E element);
 
     boolean remove(E element);
@@ -11,4 +10,5 @@ public interface Set<E> extends Collection<E> {
     int size();
 
     boolean contains(E element);
+
 }

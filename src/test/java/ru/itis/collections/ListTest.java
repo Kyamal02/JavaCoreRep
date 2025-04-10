@@ -2,9 +2,11 @@ package ru.itis.collections;
 
 import org.junit.Before;
 import org.junit.Test;
+import ru.itis.collections.arrayList.ArrayList;
 import ru.itis.collections.linkedList.LinkedList;
 
-import java.util.ArrayList;
+
+import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
@@ -12,14 +14,20 @@ public class ListTest {
 
     List<Car> carList;
 
+    public <T> List<T> listFactory(T type) {
+        return new
+                LinkedList<>();
+    }
+
     @Before
     public void setUp() {
-        carList = new LinkedList<>();
+        carList = listFactory(new Car());
 
         for (int i = 0; i < 100; i++) {
             carList.add(new Car("brand" + i, i));
         }
     }
+
 
     @Test
     public void whenAdd100ElementsThenSizeMustBe100() {
@@ -145,5 +153,71 @@ public class ListTest {
         carList.add(car);
         assertEquals(1, carList.size());
         assertEquals(car, carList.get(0));
+    }
+
+    @Test
+    public void addElementAndContainsReturnTrueForThisElement() {
+        Car car = new Car("testBrand", 999);
+        carList.add(car);
+        assertTrue(carList.contains(new Car("testBrand", 999)));
+
+        carList.remove(car);
+        assertFalse(carList.contains(new Car("testBrand", 999)));
+    }
+
+    @Test
+    public void addNullElementAndContainsReturnTrueForNull() {
+        assertTrue(carList.add(null));
+        assertTrue(carList.contains(null));
+
+        assertTrue(carList.remove(null));
+        assertFalse(carList.contains(null));
+    }
+
+    @Test
+    public void addIntoNewListElementAndRemoveIt() {
+
+        carList = listFactory(new Car());
+        assertTrue(carList.add(null));
+
+        assertTrue(carList.contains(null));
+
+        assertTrue(carList.remove(null));
+        assertFalse(carList.remove(null));
+
+        assertFalse(carList.contains(null));
+
+        for (int i = 0; i < 5; i++) {
+            carList.add(new Car("Brand" + i, i));
+        }
+
+        carList = listFactory(new Car());
+        assertTrue(carList.add(null));
+
+        assertTrue(carList.contains(null));
+
+        assertTrue(carList.remove(null));
+        assertFalse(carList.remove(null));
+
+        assertFalse(carList.contains(null));
+    }
+
+    @Test
+    public void forEachTest() {
+        int index = 0;
+        for (Car car : carList) {
+            assertTrue(car.getNumber().equals(index));
+            index++;
+        }
+
+        assertEquals(100, index);
+    }
+
+    @Test
+    public void iteratorTest() {
+        Iterator<Car> iterator = carList.iterator();
+        while (iterator.hasNext()) {
+            assertNotEquals(iterator.next(), iterator.next());
+        }
     }
 }

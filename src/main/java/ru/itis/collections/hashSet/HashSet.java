@@ -2,6 +2,9 @@ package ru.itis.collections.hashSet;
 
 import ru.itis.collections.Set;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 
 public class HashSet<E> implements Set<E> {
     private int size = 0;
@@ -37,12 +40,29 @@ public class HashSet<E> implements Set<E> {
         return size;
     }
 
+    @Override
+    public boolean contains(E element) {
+        int elementPosition = getElementPosition(element);
+        if (hashTable[elementPosition] == null) {
+            return false;
+        }
+        Entry<E> current = hashTable[elementPosition];
+        while (current != null) {
+            if (element == current.element || element != null && element.equals(current.element)) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
     private int getElementPosition(E element) {
         if (element == null) {
             return 0; // null всегда в бакете 0
         }
         int hash = element.hashCode();
-        hash = hash == 0x80000000 ? 1 : hash;
+        // сдвиг требуется для перемешивания первых 16 бит с последними 16.
+        // чтобы результат был более случайным
         return (hash ^ (hash >>> 16)) & (hashTable.length - 1);
 //      return element.hashCode() % hashTable.length;
     }
@@ -54,7 +74,7 @@ public class HashSet<E> implements Set<E> {
         } else {
             Entry<E> previous = null;
             while (current != null) {
-                if (element == null && current.element == null || current.element.equals(element)) {
+                if (element == current.element || element != null && element.equals(current.element)) {
                     return false;
                 }
                 previous = current;
@@ -73,7 +93,7 @@ public class HashSet<E> implements Set<E> {
             Entry<E> current = hashTable[position];
             Entry<E> previous = null;
             while (current != null) {
-                if (element == null && current.element == null || element != null && current.element.equals(element)) {
+                if (element == current.element || element != null && element.equals(current.element)) {
                     if (previous == null) {
                         hashTable[position] = current.next;
                     } else {
@@ -95,15 +115,72 @@ public class HashSet<E> implements Set<E> {
         hashTable = (Entry<E>[]) new Entry[newCapacity];
 
         for (int i = 0; i < oldHashTable.length; i++) {
-            Entry<E> current = oldHashTable[i];
-            while (current != null) {
-                int position = getElementPosition(current.element);
-                current.next = hashTable[position];
-                hashTable[position] = current;
-
-                current = current.next;
+            if (oldHashTable[i] != null) {
+                Entry<E> current = oldHashTable[i];
+                while (current != null) {
+                    Entry<E> next = current.next;
+                    int position = getElementPosition(current.element);
+                    current.next = hashTable[position];
+                    hashTable[position] = current;
+                    current = next;
+                }
             }
         }
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+
+        return new Itr();
+    }
+
+
+    private class Itr implements Iterator<E> {
+        int iteratorCounter = 0;
+        int index = 0;
+        Entry<E> current;
+
+        @Override
+        public boolean hasNext() {
+            return iteratorCounter != size();
+        }
+
+//        @Override
+//        public E next() {
+//            if (current != null && current.next != null) {
+//                current = current.next;
+//                iteratorCounter++;
+//                return current.element;
+//            } else {
+//                for (; index < hashTable.length; index++) {
+//                    if (hashTable[index] != null) {
+//                        current = hashTable[index];
+//                        break;
+//                    }
+//                }
+//            }
+//            index++;
+//            iteratorCounter++;
+//            return current.element;
+//        }
+
+        @Override
+        public E next() {
+            while (hashTable[index] == null) {
+                index++;
+            }
+            current = hashTable[index];
+            if (current.next == null) {
+                iteratorCounter++;
+                index++;
+                return current.element;
+            }
+            E result = current.element;
+            current = current.next;
+            iteratorCounter++;
+            return result;
+        }
+
     }
 
 
@@ -118,15 +195,37 @@ public class HashSet<E> implements Set<E> {
     }
 
     public static void main(String[] args) {
+        HashSet<Integer> hashSet = new HashSet<>();
+        Entry<Integer>[] hashTable1 = hashSet.hashTable;
+
+        hashTable1 = new Entry[10];
+        hashTable1[0] = new Entry<>(5, null);
+
 //        HashSet<Integer> integerHashSet = new HashSet<>();
 //        System.out.println(integerHashSet.add(null));
 //        System.out.println(integerHashSet.add(null));
 //        System.out.println(integerHashSet.add(Integer.MIN_VALUE));
-        Integer i = Integer.MAX_VALUE;
-        System.out.println(i.hashCode() % 16);
-        int hash = i.hashCode();
-        hash = hash == 0x80000000 ? 1 : hash;
-        System.out.println((hash ^ (hash >>> 16)) & (16 - 1));
+
+//        Car car = new Car();
+//        System.out.println(car.equals(null));
+//        System.out.println(Objects.equals(null, new Car()));
+//
+//        Integer i = Integer.MAX_VALUE;
+//        System.out.println(i.hashCode() % 16);
+//        int hash = i.hashCode();
+//        hash = hash == 0x80000000 ? 1 : hash;
+//        System.out.println((hash ^ (hash >>> 16)) & (16 - 1));
+
+//        ArrayList arrayList = new ArrayList();
+//
+//        java.util.HashSet<Integer> hashSet = new java.util.HashSet<>();
+//        for (int i = 0; i < 100000; i++) {
+//            hashSet.add(i);
+//        }
+//        Iterator<Integer> iterator = hashSet.iterator();
+//        while (iterator.hasNext()) {
+//            System.out.println(iterator.next());
+//        }
 
 //        HashSet<Integer> integerHashSet = new HashSet<>();
 //        long start = System.currentTimeMillis();

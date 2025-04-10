@@ -1,17 +1,21 @@
 package ru.itis.collections;
 
-public interface List<E> {
+public interface List<E> extends Collection<E> {
     E get(int index);
 
-    void add(E element);
 
     void add(int index, E element);
 
+    boolean add(E element);
+
     boolean remove(E element);
 
-    boolean remove(int index);
+    void clear();
 
     int size();
 
-    void clear();
+    boolean contains(E element);
+
+    boolean remove(int index);
+
 }

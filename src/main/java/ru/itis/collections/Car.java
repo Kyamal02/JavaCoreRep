@@ -2,15 +2,23 @@ package ru.itis.collections;
 
 import ru.itis.collections.arrayList.ArrayList;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.Set;
 
-public class Car {
+
+public class Car implements Comparable<Car> {
     private String brand;
     private Integer number;
+    TreeSet<CarOwner> integers = new TreeSet<>();
+
 
     public Car(String brand, Integer number) {
         this.brand = brand;
         this.number = number;
+        integers.add(new CarOwner(1, "sf", "dsf"));
+    }
+
+    public Car() {
     }
 
     public String getBrand() {
@@ -52,4 +60,9 @@ public class Car {
 
     }
 
+
+    @Override
+    public int compareTo(Car o) {
+        return brand.compareTo(o.brand);
+    }
 }
