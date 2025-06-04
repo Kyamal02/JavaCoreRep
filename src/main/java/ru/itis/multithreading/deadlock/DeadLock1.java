@@ -1,6 +1,6 @@
 package ru.itis.multithreading.deadlock;
 
-// неверная реализация так как будет переполнение стека сначала, а потом дэдлок
+// неверная реализация так как будет переполнение стека сначала
 public class DeadLock1 {
 
     public static void main(String[] args) {
