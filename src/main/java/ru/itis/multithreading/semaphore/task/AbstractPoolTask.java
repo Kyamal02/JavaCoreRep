@@ -2,6 +2,8 @@ package ru.itis.multithreading.semaphore.task;
 
 import ru.itis.multithreading.semaphore.pool.AbstractPool;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import static java.lang.System.*;
 
 
@@ -23,6 +25,8 @@ public abstract class AbstractPoolTask<T> implements Runnable {
             pool.release(object);
         }
     }
+
+
 
     protected abstract void handle(T object);
 }

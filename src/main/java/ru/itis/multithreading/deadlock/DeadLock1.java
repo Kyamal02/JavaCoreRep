@@ -5,8 +5,8 @@ public class DeadLock1 {
 
     public static void main(String[] args) {
         DeadLock1 main = new DeadLock1();
-        DeadLock1.A a = main.new A();
-        DeadLock1.B b = main.new B();
+        A a = main.new A();
+        B b = main.new B();
 
     }
 

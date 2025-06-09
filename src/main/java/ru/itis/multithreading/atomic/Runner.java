@@ -1,6 +1,11 @@
 package ru.itis.multithreading.atomic;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+
 import static java.util.Arrays.*;
 import static java.util.stream.IntStream.*;
 
@@ -25,10 +30,12 @@ public class Runner {
 
         int resultValue = generator.getValue();
 
-
         if (resultValue == amountOfGenerationThreads * taskGenerationCounts * generator.getGENERATION_DELTA()) {
             System.out.println("Потоки успешно выполнили таск");
         }
+
+
+
     }
 
     public static Thread[] createThreads(final Runnable task, final int amountThreads) {

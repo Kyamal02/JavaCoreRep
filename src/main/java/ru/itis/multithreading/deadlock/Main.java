@@ -4,8 +4,8 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
 
-        Main.A a = main.new A();
-        Main.B b = main.new B();
+        A a = main.new A();
+        B b = main.new B();
 
         a.setB(b);
         b.setA(a);

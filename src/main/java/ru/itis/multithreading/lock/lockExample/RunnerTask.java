@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 import static java.lang.System.*;
 import static java.util.Arrays.*;
 
-public class RunnerTask2 {
+public class RunnerTask {
     public static void main(String[] args) {
 
         final Counter counter = new Counter();
